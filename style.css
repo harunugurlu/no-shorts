@@ -1,0 +1,26 @@
+button {
+    background-color: #CD0A14;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px 15px;
+    margin-right: 10px;
+    margin-left: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.h1-container {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
