@@ -4,12 +4,10 @@ button {
     border: none;
     color: white;
     padding: 15px 32px 15px;
-    margin-right: 10px;
-    margin-left: 10px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
+    font-size: 18px;
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
 }

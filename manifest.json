@@ -7,9 +7,15 @@
       "default_popup": "popup.html",
       "default_icon": "16x16.png"
     },
+    "background": {
+        "service_worker": "background.js"
+      },
     "host_permissions": [
         "http://*/*",
         "https://*/*",
         "webNavigation"
+      ],
+      "permissions": [
+        "tabs", "storage", "webNavigation", "*://*.youtube.com/*"
       ]
   }
