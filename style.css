@@ -1,15 +1,26 @@
 button {
-    background-color: #CD0A14;
-    /* Green */
+    background-color: #CD0A14; /* Red */
     border: none;
     color: white;
-    padding: 15px 32px 15px;
+    padding: 15px 32px;
+    margin-left: 10px;
+    margin-right: 10px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 18px;
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer; /* Makes it clear the button is clickable */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #9B0C10; /* Darker shade of red for hover */
+}
+
+.selected {
+    background-color: #666; /* Gray color when selected */
 }
 
 .h1-container {
@@ -21,4 +32,5 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 10px; /* Adds some space around buttons */
 }
