@@ -12,8 +12,7 @@
       },
     "host_permissions": [
         "http://*/*",
-        "https://*/*",
-        "webNavigation"
+        "https://*/*"
       ],
       "permissions": [
         "tabs", "storage", "webNavigation", "*://*.youtube.com/*"
