@@ -1,5 +1,5 @@
 button {
-    background-color: #CD0A14; /* Red */
+    background-color: #CD0A14;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -11,24 +11,24 @@ button {
     font-size: 18px;
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s; /* Added transform to transition for a smooth effect */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
-    outline: none; /* Removes the outline to enhance the look on focus */
+    outline: none;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #9B0C10; /* Darker shade of red for hover */
+    background-color: #9B0C10;
 }
 
 button:active {
-    transform: translateY(4px); /* Moves the button down slightly when clicked */
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Reduces the shadow to give a pressed effect */
+    transform: translateY(4px);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 .selected {
-    background-color: #666; /* Gray color when selected */
-    box-shadow: none; /* Optionally remove the shadow to emphasize the selection */
+    background-color: #666;
+    box-shadow: none;
 }
 
 .h1-container {
