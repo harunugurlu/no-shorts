@@ -11,16 +11,24 @@ button {
     font-size: 18px;
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
-    cursor: pointer; /* Makes it clear the button is clickable */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s; /* Added transform to transition for a smooth effect */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+    outline: none; /* Removes the outline to enhance the look on focus */
+    cursor: pointer;
 }
 
 button:hover {
     background-color: #9B0C10; /* Darker shade of red for hover */
 }
 
+button:active {
+    transform: translateY(4px); /* Moves the button down slightly when clicked */
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Reduces the shadow to give a pressed effect */
+}
+
 .selected {
     background-color: #666; /* Gray color when selected */
+    box-shadow: none; /* Optionally remove the shadow to emphasize the selection */
 }
 
 .h1-container {
@@ -32,5 +40,5 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px; /* Adds some space around buttons */
+    padding: 10px;
 }
