@@ -1,3 +1,11 @@
+function updateShortsCount(count) {
+    chrome.storage.local.get('shortsCount', data => {
+        if(data.shortsCount) {
+            chrome.storage.local.set({'shortsCount': count});
+        }
+    })
+}
+
 function redirectShorts(details) {
     chrome.storage.local.get('blockingEnabled', data => {
         if (data.blockingEnabled && details.url.includes('/shorts/')) {
@@ -13,6 +21,21 @@ function redirectShorts(details) {
                     });
                 }
             });
+        }
+        else if(!data.blockingEnabled && details.url.includes('/shorts/')) {
+            chrome.storage.local.get('shortsCount', data => {
+                if(data.shortsCount && data.shortsCount > 5 && isNotified) {
+                    chrome.notifications.create({
+                        type: 'basic',
+                        iconUrl: '128x128.png',
+                        title: 'Doom Scrolling Warning',
+                        message: 'Hey, it looks like you started doom scrolling, just saying.',
+                        priority: 2
+                    })
+                    updateShortsCount(0);
+                }
+                updateShortsCount(++data.shortsCount);
+            })
         }
     });
 }
