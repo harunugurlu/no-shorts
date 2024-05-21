@@ -30,9 +30,6 @@ document.getElementById('enableButton').addEventListener('click', function () {
         chrome.storage.local.get('blockingEnabled', data => {
             chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled });
             redirectShorts();
-            $.getscript("removeShorts.js",function(){
-                tryRemoveShorts();
-            });
         });
     }
 });
@@ -43,6 +40,7 @@ document.getElementById('disableButton').addEventListener('click', function () {
         document.getElementById('enableButton').classList.remove('selected');
         chrome.storage.local.get('blockingEnabled', data => {
             chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled })
+            chrome.storage.local.set({'shortsCount': 1});
         });
     }
 });
