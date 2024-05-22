@@ -1,5 +1,5 @@
 
-function removeShortButtons(){
+function removeShortButtons() {
     const shortsButtons = document.querySelectorAll('a[title="Shorts"]');
 
     shortsButtons.forEach(button => {
@@ -7,7 +7,7 @@ function removeShortButtons(){
     });
 }
 
-function removeShortSections(){
+function removeShortSections() {
     const sections = document.querySelectorAll("span#title.style-scope.ytd-rich-shelf-renderer");
     sections.forEach(title => {
         if (title.textContent.trim() === "Shorts") {
@@ -26,20 +26,48 @@ function removeShortSections(){
     });
 }
 
-function tryRemoveShorts(){
-    chrome.storage.local.get('blockingEnabled', data => {
-        if (data.blockingEnabled) {
-            removeShortButtons();
-            removeShortSections();
+function removeVideoShorts() {
+    const reelTitle = document.querySelector("span#title.style-scope.ytd-reel-shelf-renderer");
+    if (reelTitle){
+        if (reelTitle.textContent.trim() === "Shorts") {
+            var section = reelTitle;
+            for (let i = 1; i < 5; i++) {
+                section = section.parentElement;
+                if (section.className == "style-scope ytd-item-section-renderer") {
+                    section.style.display = "none";
+                    return;
+                }
+            }
         }
-    });
+    }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    tryRemoveShorts();
-});
+function tryRemoveShorts() {
+    try {
+        chrome.storage.local.get('blockingEnabled', data => {
+            if (data.blockingEnabled) {
+                removeShortButtons();
+                removeShortSections();
+                removeVideoShorts();
+            }
+        });
+    }
+    catch {
+        removeShortButtons();
+        removeShortSections();
+        removeVideoShorts();
+    }
+}
 
-const observer = new MutationObserver(function (mutations) {
+window.addEventListener("load", function () {
     tryRemoveShorts();
+
+    const observer = new MutationObserver(function (mutations) {
+        tryRemoveShorts();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    window.addEventListener('unload', function () {
+        observer.disconnect();
+    });
 });
-observer.observe(document.body, { childList: true, subtree: true });
