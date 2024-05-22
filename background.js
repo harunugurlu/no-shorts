@@ -9,12 +9,19 @@ chrome.runtime.onInstalled.addListener(() => {
             chrome.storage.local.set({ shortsCount: 0 });
         }
     });
+    chrome.storage.local.get('isNotified', data => {
+        if (data.isNotified === undefined) {
+            chrome.storage.local.set({ isNotified: false });
+        }
+    });
 });
 
 function updateShortsCount(count) {
     chrome.storage.local.get('shortsCount', data => {
         let newCount = count === 0 ? 0 : (data.shortsCount || 0) + count;
+        console.log("current shortsCount", data.shortsCount);
         chrome.storage.local.set({ shortsCount: newCount }, () => {
+            console.log("shortsCount is updated to", newCount);
         });
     });
 }
@@ -56,8 +63,9 @@ function redirectShorts(details) {
             });
         }
         else if (!data.blockingEnabled && details.url.includes('/shorts/')) {
-            chrome.storage.local.get('shortsCount', data => {
-                if (data.shortsCount && data.shortsCount > 5) {
+            console.log("blockingEnabled is FALSE");
+            chrome.storage.local.get(['shortsCount', 'isNotified'], data => {
+                if (data.shortsCount && data.shortsCount > 4 && !data.isNotified) {
                     chrome.notifications.create({
                         type: 'basic',
                         iconUrl: '128x128.png',
@@ -66,8 +74,9 @@ function redirectShorts(details) {
                         priority: 2
                     });
                     updateShortsCount(0);
+                    chrome.storage.local.set({ isNotified: true });
                 } else {
-                    updateShortsCount(data.shortsCount + 1);
+                    updateShortsCount(1);
                 }
             });
         }

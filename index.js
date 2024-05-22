@@ -24,23 +24,25 @@ function redirectShorts() {
 }
 
 document.getElementById('enableButton').addEventListener('click', function () {
-    if(!this.classList.contains('selected')) {
+    if (!this.classList.contains('selected')) {
         this.classList.add('selected');
         document.getElementById('disableButton').classList.remove('selected');
         chrome.storage.local.get('blockingEnabled', data => {
             chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled });
             redirectShorts();
+            chrome.storage.local.set({ isNotified: false });
+            chrome.storage.local.set({ 'shortsCount': 0 });
         });
     }
 });
 
 document.getElementById('disableButton').addEventListener('click', function () {
-    if(!this.classList.contains('selected')) {
+    if (!this.classList.contains('selected')) {
         this.classList.add('selected');
         document.getElementById('enableButton').classList.remove('selected');
         chrome.storage.local.get('blockingEnabled', data => {
             chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled })
-            chrome.storage.local.set({'shortsCount': 1});
+            chrome.storage.local.set({ 'shortsCount': 0 });
         });
     }
 });
