@@ -30,9 +30,6 @@ document.getElementById('enableButton').addEventListener('click', function () {
         chrome.storage.local.get('blockingEnabled', data => {
             chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled });
             redirectShorts();
-            $.getscript("removeShorts.js",function(){
-                tryRemoveShorts();
-            });
         });
     }
 });
