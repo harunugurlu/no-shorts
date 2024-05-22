@@ -1,9 +1,32 @@
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.get('blockingEnabled', data => {
+        if (data.blockingEnabled === undefined) {
+            chrome.storage.local.set({ 'blockingEnabled': true });
+        }
+    });
+    chrome.storage.local.get('shortsCount', data => {
+        if (data.shortsCount === undefined) {
+            chrome.storage.local.set({ shortsCount: 0 });
+        }
+    });
+});
+
 function updateShortsCount(count) {
     chrome.storage.local.get('shortsCount', data => {
-        if(data.shortsCount) {
-            chrome.storage.local.set({'shortsCount': count});
-        }
-    })
+        let newCount = count === 0 ? 0 : (data.shortsCount || 0) + count;
+        chrome.storage.local.set({ shortsCount: newCount }, () => {
+        });
+    });
+}
+
+let timeout;
+const debounce = (callback, delay) => {
+    return (...args) => { // ...args means this function takes any number of arguments
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            callback.apply(this, args) // apply is method that calls another method with the given arguments
+        }, delay);
+    }
 }
 
 //TODO: When enabled, allow for only one shorts, restrict scrolling down.
@@ -13,10 +36,10 @@ function redirectShorts(details) {
     chrome.storage.local.get('blockingEnabled', data => {
         if (data.blockingEnabled && details.url.includes('/shorts/')) {
             chrome.storage.local.get('shortsCount', data => {
-                if(data.shortsCount && data.shortsCount > 1 && isNotified) {  
+                console.log("redirectShorts shortsCount", data.shortsCount);
+                if (data.shortsCount && data.shortsCount >= 1) {
                     chrome.tabs.update(details.tabId, { url: "https://www.youtube.com/" }, () => {
-                        if(chrome.runtime.lastError) {
-                        } else {
+                        if (!chrome.runtime.lastError) {
                             chrome.notifications.create({
                                 type: 'basic',
                                 iconUrl: '128x128.png',
@@ -24,59 +47,32 @@ function redirectShorts(details) {
                                 message: 'You were redirected away from YouTube Shorts. Now, go be productive :)',
                                 priority: 2
                             });
+                            updateShortsCount(0);
                         }
                     });
-                    updateShortsCount(0);
+                } else {
+                    updateShortsCount(1);
                 }
             });
         }
-        else if(!data.blockingEnabled && details.url.includes('/shorts/')) {
+        else if (!data.blockingEnabled && details.url.includes('/shorts/')) {
             chrome.storage.local.get('shortsCount', data => {
-                if(data.shortsCount && data.shortsCount > 5 && isNotified) {
+                if (data.shortsCount && data.shortsCount > 5) {
                     chrome.notifications.create({
                         type: 'basic',
                         iconUrl: '128x128.png',
                         title: 'Doom Scrolling Warning',
                         message: 'Hey, it looks like you started doom scrolling, just saying.',
                         priority: 2
-                    })
+                    });
                     updateShortsCount(0);
+                } else {
+                    updateShortsCount(data.shortsCount + 1);
                 }
-                updateShortsCount(++data.shortsCount);
-            })
+            });
         }
     });
 }
-// function redirectShortsOnActiveChange(activeInfo) {
-//     chrome.storage.local.get('blockingEnabled', data => {
-//         chrome.tabs.get(activeInfo.tabId, currentTab => {
-//             if (chrome.runtime.lastError) {
-//                 console.error(`Error retrieving tab: ${chrome.runtime.lastError}`);
-//                 return;
-//             }
-//             currentUrl = currentTab.url ? currentTab.url : ''
-//             pendingUrl = currentTab.pendingUrl ? currentTab.pendingUrl : ''
-//             if (data.blockingEnabled && (currentUrl.includes('/shorts/') || pendingUrl.includes('/shorts/'))) {
-//                 chrome.tabs.update(activeInfo.tabId, { url: "https://www.youtube.com/" }, () => {
-//                     if (chrome.runtime.lastError) {
-//                         console.error(`Error redirecting: ${chrome.runtime.lastError}`);
-//                     } else {
-//                         chrome.notifications.create({
-//                             type: 'basic',
-//                             iconUrl: '128x128.png',  // Ensure you have an icon.png in your extension directory
-//                             title: 'Redirection Notice',
-//                             message: 'You were redirected away from YouTube Shorts. Now, go be productive :)',
-//                             priority: 2
-//                         });
-//                     }
-//                 });
-//             }
-//         });
-//     });
-// }
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(redirectShorts, { url: [{ urlMatches: 'https://www.youtube.com/shorts/*' }] });
-
-// chrome.webNavigation.onCommitted.addListener(redirectShorts, { url: [{ urlMatches: 'https://www.youtube.com/shorts/*' }] });
-
-chrome.tabs.onActivated.addListener(redirectShortsOnActiveChange);
+// redirectShorts() is being called with 300 min delay after the historyStateUpdated event
+chrome.webNavigation.onHistoryStateUpdated.addListener(debounce(redirectShorts, 300), { url: [{ urlMatches: 'https://www.youtube.com/shorts/*' }] }); 
