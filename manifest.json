@@ -21,5 +21,9 @@
 		"storage",
 		"webNavigation",
 		"notifications"
-	]
+	],
+	"web_accessible_resources": [{
+		"resources": ["quotes.txt"],
+		"matches": ["chrome-extension://*/*"]
+	}]
 }
