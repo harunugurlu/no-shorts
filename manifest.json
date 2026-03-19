@@ -1,11 +1,11 @@
 {
 	"manifest_version": 3,
 	"name": "No Distractions YouTube",
-	"description": "For people who want a distraction-free YouTube experience. Block Shorts and with focus mode remove watch recommendations, autoplay, and make videos full width.",
+	"description": "Remove distractions from YouTube",
 	"version": "2.0",
 	"action": {
 		"default_popup": "popup.html",
-		"default_icon": "16x16.png"
+		"default_icon": "no-distractions-youtube-16x16.png"
 	},
 	"content_scripts": [
 		{

@@ -33,7 +33,7 @@ function createRedirectionNotification() {
     const quote = getInspirationalQuote();
     chrome.notifications.create({
         type: 'basic',
-        iconUrl: '128x128.png',
+        iconUrl: 'no-distractions-youtube-128-128.png',
         title: 'Redirected from YouTube Shorts',
         message: `Helping you stay productive!\n\n${quote}`,
         priority: 2
