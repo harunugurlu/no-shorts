@@ -10,13 +10,13 @@ window.onload = function () {
     });
 }
 
-function redirectShorts() {
-    chrome.storage.local.get('blockingEnabled', data => {
-        if (data.blockingEnabled) {
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                var activeTab = tabs[0];
-                if (activeTab.url.includes("/shorts/")) {
-                    chrome.tabs.update(activeTab.id, { url: "https://www.youtube.com/" });
+function redirectCurrentTabIfShorts() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        const activeTab = tabs[0];
+        if (activeTab && activeTab.url && activeTab.url.includes("/shorts/")) {
+            chrome.tabs.update(activeTab.id, { url: "https://www.youtube.com/" }, () => {
+                if (!chrome.runtime.lastError) {
+                    chrome.runtime.sendMessage({ type: 'showRedirectNotification' });
                 }
             });
         }
@@ -24,22 +24,17 @@ function redirectShorts() {
 }
 
 document.getElementById('enableButton').addEventListener('click', function () {
-    if(!this.classList.contains('selected')) {
+    if (!this.classList.contains('selected')) {
         this.classList.add('selected');
         document.getElementById('disableButton').classList.remove('selected');
-        chrome.storage.local.get('blockingEnabled', data => {
-            chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled });
-            redirectShorts();
-        });
+        chrome.storage.local.set({ 'blockingEnabled': true }, redirectCurrentTabIfShorts);
     }
 });
 
 document.getElementById('disableButton').addEventListener('click', function () {
-    if(!this.classList.contains('selected')) {
+    if (!this.classList.contains('selected')) {
         this.classList.add('selected');
         document.getElementById('enableButton').classList.remove('selected');
-        chrome.storage.local.get('blockingEnabled', data => {
-            chrome.storage.local.set({ 'blockingEnabled': !data.blockingEnabled })
-        });
+        chrome.storage.local.set({ 'blockingEnabled': false });
     }
 });

@@ -26,9 +26,11 @@ button:active {
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-.selected {
+.selected,
+.selected:hover {
     background-color: #666;
     box-shadow: none;
+    cursor: default;
 }
 
 .h1-container {

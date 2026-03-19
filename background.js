@@ -4,25 +4,25 @@ let quotes = [];
 fetch(chrome.runtime.getURL('quotes.txt'))
     .then(response => response.text())
     .then(text => {
-        // Split by empty lines to get quote blocks
-        const blocks = text.split('\n\n');
+        const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const blocks = normalized.split('\n\n');
         quotes = blocks.filter(block => block.trim() !== '').map(block => {
             const lines = block.split('\n').filter(line => line.trim() !== '');
             return {
                 quote: lines[0],
                 author: lines[1] || '',
-                reference: lines[2] || '',
-                length: lines[0].length // Add length for filtering
+                reference: lines[2] || ''
             };
         });
-    });
+    })
+    .catch(() => {});
 
 function getInspirationalQuote() {
     if (quotes.length === 0) {
         return "Stay focused and make the most of your time!";
     }
     // Filter for shorter quotes (less than 100 characters)
-    const shortQuotes = quotes.filter(q => q.length < 100);
+    const shortQuotes = quotes.filter(q => q.quote.length < 100);
     if (shortQuotes.length === 0) return "Stay focused and make the most of your time!";
     
     const randomQuote = shortQuotes[Math.floor(Math.random() * shortQuotes.length)];
@@ -34,7 +34,7 @@ function createRedirectionNotification() {
     chrome.notifications.create({
         type: 'basic',
         iconUrl: '128x128.png',
-        title: '🎯 Redirecting from YouTube Shorts',
+        title: 'Redirected from YouTube Shorts',
         message: `Helping you stay productive!\n\n${quote}`,
         priority: 2
     });
@@ -118,10 +118,17 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(handleNavigation, {
     }]
 });
 
-// Handle tab activation
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'showRedirectNotification') {
+        createRedirectionNotification();
+    }
+});
+
 chrome.tabs.onActivated.addListener(activeInfo => {
     chrome.tabs.get(activeInfo.tabId, tab => {
         if (chrome.runtime.lastError) return;
-        handleShortsRedirect(tab.url, tab.id);
+        if (tab.url && tab.url.includes('www.youtube.com/') && tab.url.includes('/shorts')) {
+            handleShortsRedirect(tab.url, tab.id);
+        }
     });
 });
