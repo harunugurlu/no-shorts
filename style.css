@@ -1,46 +1,62 @@
-button {
-    background-color: #CD0A14;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    margin-left: 10px;
-    margin-right: 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 18px;
-    border-radius: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
-    outline: none;
-    cursor: pointer;
+body {
+    margin: 0;
+    padding: 12px 16px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #1a1a1a;
+    color: #f1f1f1;
+    min-width: 240px;
 }
 
-button:hover {
-    background-color: #9B0C10;
+.feature-section {
+    margin-bottom: 16px;
 }
 
-button:active {
-    transform: translateY(4px);
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+.feature-section:last-child {
+    margin-bottom: 0;
 }
 
-.selected,
-.selected:hover {
-    background-color: #666;
-    box-shadow: none;
-    cursor: default;
-}
-
-.h1-container {
-    display: flex;
-    justify-content: center;
+h2 {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #aaa;
 }
 
 .btn-container {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
+    gap: 8px;
+}
+
+button {
+    flex: 1;
+    background-color: #cc0000;
+    border: none;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.1s;
+    outline: none;
+}
+
+button:hover {
+    background-color: #a00;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.selected,
+.selected:hover {
+    background-color: #333;
+    color: #888;
+    cursor: default;
 }

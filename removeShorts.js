@@ -19,7 +19,9 @@ const SHORTS_CSS = `
   ytd-reel-item-renderer,
   yt-tab-shape[tab-title="Shorts"],
   tp-yt-paper-tab:has(a[href*="/shorts"]),
-  .ytChipBarViewModelChipWrapper:has(button[aria-label="Shorts"]) {
+  .ytChipBarViewModelChipWrapper:has(button[aria-label="Shorts"]),
+  grid-shelf-view-model:has(a[href^="/shorts"]),
+  ytm-shorts-lockup-view-model-v2 {
     display: none !important;
   }
 `;

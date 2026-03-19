@@ -1,11 +1,32 @@
-window.onload = function () {
-    chrome.storage.local.get('blockingEnabled', function (data) {
-        if (data.blockingEnabled) {
-            document.getElementById('enableButton').classList.add('selected');
-            document.getElementById('disableButton').classList.remove('selected');
+function initToggle(storageKey, enableBtnId, disableBtnId, onEnable) {
+    const enableBtn = document.getElementById(enableBtnId);
+    const disableBtn = document.getElementById(disableBtnId);
+
+    chrome.storage.local.get(storageKey, function (data) {
+        if (data[storageKey]) {
+            enableBtn.classList.add('selected');
+            disableBtn.classList.remove('selected');
         } else {
-            document.getElementById('disableButton').classList.add('selected');
-            document.getElementById('enableButton').classList.remove('selected');
+            disableBtn.classList.add('selected');
+            enableBtn.classList.remove('selected');
+        }
+    });
+
+    enableBtn.addEventListener('click', function () {
+        if (!this.classList.contains('selected')) {
+            this.classList.add('selected');
+            disableBtn.classList.remove('selected');
+            chrome.storage.local.set({ [storageKey]: true }, () => {
+                if (onEnable) onEnable();
+            });
+        }
+    });
+
+    disableBtn.addEventListener('click', function () {
+        if (!this.classList.contains('selected')) {
+            this.classList.add('selected');
+            enableBtn.classList.remove('selected');
+            chrome.storage.local.set({ [storageKey]: false });
         }
     });
 }
@@ -23,18 +44,7 @@ function redirectCurrentTabIfShorts() {
     });
 }
 
-document.getElementById('enableButton').addEventListener('click', function () {
-    if (!this.classList.contains('selected')) {
-        this.classList.add('selected');
-        document.getElementById('disableButton').classList.remove('selected');
-        chrome.storage.local.set({ 'blockingEnabled': true }, redirectCurrentTabIfShorts);
-    }
-});
-
-document.getElementById('disableButton').addEventListener('click', function () {
-    if (!this.classList.contains('selected')) {
-        this.classList.add('selected');
-        document.getElementById('enableButton').classList.remove('selected');
-        chrome.storage.local.set({ 'blockingEnabled': false });
-    }
-});
+window.onload = function () {
+    initToggle('blockingEnabled', 'shortsEnableButton', 'shortsDisableButton', redirectCurrentTabIfShorts);
+    initToggle('focusModeEnabled', 'focusEnableButton', 'focusDisableButton');
+};

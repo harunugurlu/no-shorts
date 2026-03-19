@@ -96,26 +96,48 @@ function handleShortsRedirect(url, tabId) {
     });
 }
 
-// Handle direct navigation and history state changes
-function handleNavigation(details) {
-    if (details.frameId === 0) { // Only handle main frame
-        handleShortsRedirect(details.url, details.tabId);
+function isExploreTrendingUrl(url) {
+    if (!url) return false;
+    try {
+        const urlObj = new URL(url);
+        if (urlObj.hostname !== 'www.youtube.com') return false;
+        const path = urlObj.pathname;
+        return path === '/feed/explore' || path === '/feed/trending';
+    } catch {
+        return false;
     }
 }
 
-// Listen for navigation events
+function handleExploreTrendingRedirect(url, tabId) {
+    if (!url) return;
+    chrome.storage.local.get('focusModeEnabled', data => {
+        if (data.focusModeEnabled && isExploreTrendingUrl(url)) {
+            chrome.tabs.update(tabId, { url: 'https://www.youtube.com/' });
+        }
+    });
+}
+
+function handleNavigation(details) {
+    if (details.frameId === 0) {
+        handleShortsRedirect(details.url, details.tabId);
+        handleExploreTrendingRedirect(details.url, details.tabId);
+    }
+}
+
 chrome.webNavigation.onCommitted.addListener(handleNavigation, {
-    url: [{
-        hostEquals: 'www.youtube.com',
-        pathContains: '/shorts'
-    }]
+    url: [
+        { hostEquals: 'www.youtube.com', pathContains: '/shorts' },
+        { hostEquals: 'www.youtube.com', pathEquals: '/feed/explore' },
+        { hostEquals: 'www.youtube.com', pathEquals: '/feed/trending' }
+    ]
 });
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(handleNavigation, {
-    url: [{
-        hostEquals: 'www.youtube.com',
-        pathContains: '/shorts'
-    }]
+    url: [
+        { hostEquals: 'www.youtube.com', pathContains: '/shorts' },
+        { hostEquals: 'www.youtube.com', pathEquals: '/feed/explore' },
+        { hostEquals: 'www.youtube.com', pathEquals: '/feed/trending' }
+    ]
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
